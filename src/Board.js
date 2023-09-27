@@ -27,18 +27,32 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
+function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.2 }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
+    for (let i = 0; i < nrows; i++) {
+      const row = Array.from({ length: ncols }, () => chanceLightStartsOn > Math.random());
+      initialBoard.push(row);
+    }
+    console.log("board=", initialBoard)
     return initialBoard;
   }
 
+  /** Check the board if all cells are false. If so, return true.
+   *
+   *  If any cell is true (on) return false.
+   */
   function hasWon() {
-    // TODO: check the board in state to determine whether the player has won.
+    for (const row of board) {
+      for (const cell of row) {
+        if (cell) return false;
+      }
+    }
+
+    return true;
   }
 
   function flipCellsAround(coord) {
@@ -54,6 +68,10 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
       };
 
       // TODO: Make a (deep) copy of the oldBoard
+
+      for (const row of oldBoard) {
+        [...row]
+      }
 
       // TODO: in the copy, flip this cell and the cells around it
 
