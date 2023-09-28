@@ -27,17 +27,17 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.2 }) {
+function Board({ nrows = 5, ncols = 5, chanceLightStartsOn = 0.25 }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
+    //TODO: Array.from({length: nrows}).map(r=>Array.from({length:ncols}))
     for (let i = 0; i < nrows; i++) {
       const row = Array.from({ length: ncols }, () => chanceLightStartsOn > Math.random());
       initialBoard.push(row);
     }
-    console.log("board=", initialBoard)
     return initialBoard;
   }
 
@@ -45,6 +45,7 @@ function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.2 }) {
    *
    *  If any cell is true (on) return false.
    */
+  //TODO: Array.every() instead of nested loops
   function hasWon() {
     for (const row of board) {
       for (const cell of row) {
@@ -67,45 +68,41 @@ function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.2 }) {
         }
       };
 
-      // TODO: Make a (deep) copy of the oldBoard
-
+      // Make a (deep) copy of the oldBoard
       const newBoard = oldBoard.map(row => [...row]);
 
-      // TODO: in the copy, flip this cell and the cells around it
-
+      // in the copy, flip this cell and the cells around it
       flipCell(y, x, newBoard);
-      flipCell(y-1, x, newBoard);
-      flipCell(y+1, x, newBoard);
-      flipCell(y, x-1, newBoard);
-      flipCell(y, x-1, newBoard);
+      flipCell(y - 1, x, newBoard);
+      flipCell(y + 1, x, newBoard);
+      flipCell(y, x - 1, newBoard);
+      flipCell(y, x + 1, newBoard);
 
-      // TODO: return the copy
 
       return newBoard;
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
-    if (hasWon()) return <p>Congrats! You Won!</p>
-
-  // TODO
+  if (hasWon()) return <p>Congrats! You Won!</p>;
 
   return (
-    <div className="Board" style={{width:`${ncols*100}px`}}>
-      {board.map((row, y) =>
-        row.map((cell, x) =>
-        <Cell key={`${y}-${x}`}
-              isLit={board[y][x]}
-              flipCellsAroundMe={flipCellsAround}/> ))}
-    {/* {for (let y = 0; y < nrows; y++) {
-      for (let x = 0; x < ncols; x++ ){
-        <Cell key={`${y}-${x}`} isLit={board[y][x]} flipCellsAroundMe={flipCellsAround}/>
-      }
-    }} */}
-    </div>
-  )
+    <table className="Board" >
+      <tbody >
+        {board.map((row, y) =>
+          <tr key={y}>{row.map((cell, x) =>
+            <Cell key={`${y}-${x}`}
+              id={`${y}-${x}`}
+              isLit={cell}
+              flipCellsAroundMe={flipCellsAround} />
+          )}
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
 
-  // TODO
+
 }
 
 export default Board;
